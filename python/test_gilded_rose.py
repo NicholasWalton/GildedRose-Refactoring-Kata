@@ -7,10 +7,10 @@ from gilded_rose import Item, GildedRose
 @pytest.fixture
 def item(request, sell_in, quality):
     name = request.node.get_closest_marker("item_name").args[0]
-    items = [Item(name, sell_in, quality)]
-    gilded_rose = GildedRose(items)
+    item = Item(name, sell_in, quality)
+    gilded_rose = GildedRose([item])
     gilded_rose.update_quality()
-    return items[0]
+    return item
 
 
 @pytest.mark.item_name("foo")
