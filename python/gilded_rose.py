@@ -6,6 +6,12 @@ SULFURAS = "Sulfuras, Hand of Ragnaros"
 MAX_QUALITY = 50
 
 
+class ItemType():
+    BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert"
+    AGED_BRIE = "Aged Brie"
+    SULFURAS = "Sulfuras, Hand of Ragnaros"
+
+
 class GildedRose(object):
     def __init__(self, items):
         self.items = items
@@ -19,27 +25,30 @@ class GildedRose(object):
         return max(MINIMUM_QUALITY, intermediate)
 
     def _update_item_quality(self, item):
-        if item.name != AGED_BRIE and item.name != BACKSTAGE_PASSES:
-            if item.name != SULFURAS:
-                item.quality = self._item_quality_modifier(item.quality, -1)
-        else:
-            item.quality = self._item_quality_modifier(item.quality, 1)
-            if item.name == BACKSTAGE_PASSES:
-                if item.sell_in < 11:
+        match item.name:
+            case ItemType.AGED_BRIE:
+                if item.sell_in > 0:
                     item.quality = self._item_quality_modifier(item.quality, 1)
-                if item.sell_in < 6:
-                    item.quality = self._item_quality_modifier(item.quality, 1)
-        if item.name != SULFURAS:
-            item.sell_in = item.sell_in - 1
-        if item.sell_in < 0:
-            if item.name != AGED_BRIE:
-                if item.name != BACKSTAGE_PASSES:
-                    if item.name != SULFURAS:
-                        item.quality = self._item_quality_modifier(item.quality, -1)
                 else:
-                    item.quality = MINIMUM_QUALITY
-            else:
-                item.quality = self._item_quality_modifier(item.quality, 1)
+                    item.quality = self._item_quality_modifier(item.quality, 2)
+            case ItemType.BACKSTAGE_PASSES:
+                if item.sell_in > 10:
+                    item.quality = self._item_quality_modifier(item.quality, 1)
+                elif item.sell_in > 5:
+                    item.quality = self._item_quality_modifier(item.quality, 2)
+                elif item.sell_in > 0:
+                    item.quality = self._item_quality_modifier(item.quality, 3)
+                else:
+                    item.quality = 0
+            case ItemType.SULFURAS:
+                item.sell_in += 1
+            case _:
+                if item.sell_in > 0:
+                    item.quality = self._item_quality_modifier(item.quality, -1)
+                else:
+                    item.quality = self._item_quality_modifier(item.quality, -2)
+
+        item.sell_in -= 1
 
 
 class Item:
