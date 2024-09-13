@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 MINIMUM_QUALITY = 0
-BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert"
-AGED_BRIE = "Aged Brie"
-SULFURAS = "Sulfuras, Hand of Ragnaros"
+CONJURED = "Conjured"
 MAX_QUALITY = 50
 
 
@@ -24,6 +22,15 @@ class GildedRose(object):
         intermediate = min(MAX_QUALITY, quality + modifier)
         return max(MINIMUM_QUALITY, intermediate)
 
+    def _update_generic(self, item):
+        degredation_rate = -1
+        if item.sell_in <= 0:
+            degredation_rate *= 2
+        if item.name.startswith(CONJURED):
+            degredation_rate *= 2
+
+        item.quality = self._item_quality_modifier(item.quality, degredation_rate)
+
     def _update_item_quality(self, item):
         match item.name:
             case ItemType.AGED_BRIE:
@@ -43,10 +50,7 @@ class GildedRose(object):
             case ItemType.SULFURAS:
                 item.sell_in += 1
             case _:
-                if item.sell_in > 0:
-                    item.quality = self._item_quality_modifier(item.quality, -1)
-                else:
-                    item.quality = self._item_quality_modifier(item.quality, -2)
+                self._update_generic(item)
 
         item.sell_in -= 1
 

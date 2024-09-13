@@ -29,6 +29,16 @@ def test_generic_item_ages(sell_in, quality, expected_quality):
 
 @pytest.mark.parametrize(
     "sell_in,quality,expected_quality",
+    ((5, 10, 8), (1, 10, 8), (0, 10, 6), (-5, 20, 16), (10, 0, 0)),
+)
+def test_generic_conjured_item_ages(sell_in, quality, expected_quality):
+    items = create_and_update_rose("Conjured Sausage", sell_in, quality)
+    assert sell_in - 1 == items[0].sell_in
+    assert expected_quality == items[0].quality
+
+
+@pytest.mark.parametrize(
+    "sell_in,quality,expected_quality",
     ((5, 10, 11), (1, 10, 11), (0, 10, 12), (-5, 20, 22), (10, 50, 50)),
 )
 def test_aged_brie_ages(sell_in, quality, expected_quality):
@@ -39,7 +49,7 @@ def test_aged_brie_ages(sell_in, quality, expected_quality):
 
 @pytest.mark.parametrize(
     "sell_in,quality,expected_quality",
-    ((5, 10, 10), (1, 10, 10), (0, 10, 10), (-5, 20, 20)),
+    ((5, 10, 10), (1, 10, 10), (0, 10, 10), (-5, 20, 20), (5, 80, 80)),
 )
 def test_sulfuras_ages(sell_in, quality, expected_quality):
     items = create_and_update_rose("Sulfuras, Hand of Ragnaros", sell_in, quality)
