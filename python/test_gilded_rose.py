@@ -17,53 +17,67 @@ def test_name(updated_item):
     assert updated_item.name == "item_name"
 
 
+class GildedRoseSuite:
+    @staticmethod
+    def test_item(updated_item, sell_in, expected_quality):
+        assert updated_item.sell_in == sell_in - 1
+        assert updated_item.quality == expected_quality
+
+
+@pytest.mark.parametrize("name", ("Sausage",))
 @pytest.mark.parametrize(
-    "name,sell_in,quality,expected_quality",
+    "sell_in,quality,expected_quality",
+    ((5, 10, 9), (1, 10, 9), (0, 10, 8), (-5, 20, 18), (10, 0, 0)),
+)
+class TestSausage(GildedRoseSuite):
+    pass
+
+
+@pytest.mark.parametrize("name", ("Conjured Sausage",))
+@pytest.mark.parametrize(
+    "sell_in,quality,expected_quality",
+    ((5, 10, 8), (1, 10, 8), (0, 10, 6), (-5, 20, 16), (10, 0, 0)),
+)
+class TestConjured(GildedRoseSuite):
+    pass
+
+
+@pytest.mark.parametrize("name", ("Aged Brie",))
+@pytest.mark.parametrize(
+    "sell_in,quality,expected_quality",
     (
-        [
-            ("Sausage", *vals)
-            for vals in ((5, 10, 9), (1, 10, 9), (0, 10, 8), (-5, 20, 18), (10, 0, 0))
-        ]
-        + [
-            ("Conjured Sausage", *vals)
-            for vals in ((5, 10, 8), (1, 10, 8), (0, 10, 6), (-5, 20, 16), (10, 0, 0))
-        ]
-        + [
-            ("Aged Brie", *vals)
-            for vals in (
-                (5, 10, 11),
-                (1, 10, 11),
-                (0, 10, 12),
-                (-5, 20, 22),
-                (10, 50, 50),
-            )
-        ]
-        + [
-            ("Backstage passes to a TAFKAL80ETC concert", *vals)
-            for vals in (
-                (11, 10, 11),
-                (9, 10, 12),
-                (5, 10, 13),
-                (1, 10, 13),
-                (0, 10, 0),
-                (-5, 20, 0),
-                (5, 49, 50),
-                (5, 50, 50),
-            )
-        ]
+        (5, 10, 11),
+        (1, 10, 11),
+        (0, 10, 12),
+        (-5, 20, 22),
+        (10, 50, 50),
     ),
 )
-def test_item(updated_item, sell_in, expected_quality):
-    assert updated_item.sell_in == sell_in - 1
-    assert updated_item.quality == expected_quality
+class TestAgedBrie(GildedRoseSuite):
+    pass
 
 
+@pytest.mark.parametrize("name", ("Backstage passes to a TAFKAL80ETC concert",))
 @pytest.mark.parametrize(
-    "name,sell_in,quality",
-    [
-        ("Sulfuras, Hand of Ragnaros", *vals)
-        for vals in ((5, 10), (1, 10), (0, 10), (-5, 20), (5, 80))
-    ],
+    "sell_in,quality,expected_quality",
+    (
+        (11, 10, 11),
+        (9, 10, 12),
+        (5, 10, 13),
+        (1, 10, 13),
+        (0, 10, 0),
+        (-5, 20, 0),
+        (5, 49, 50),
+        (5, 50, 50),
+    ),
+)
+class TestBackstagePasses(GildedRoseSuite):
+    pass
+
+
+@pytest.mark.parametrize("name", ("Sulfuras, Hand of Ragnaros",))
+@pytest.mark.parametrize(
+    "sell_in,quality", ((5, 10), (1, 10), (0, 10), (-5, 20), (5, 80))
 )
 def test_sulfuras(updated_item, sell_in, quality):
     assert updated_item.sell_in == sell_in
