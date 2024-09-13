@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-MINIMUM_QUALITY = 0
+MIN_QUALITY = 0
 CONJURED = "Conjured"
 MAX_QUALITY = 50
 
@@ -17,23 +17,6 @@ class GildedRose(object):
     def update_quality(self):
         for item in self.items:
             GildedRose._update_item_quality(item)
-
-    @staticmethod
-    def _clamp(value, min_value, max_value):
-        return max(min_value, min(value, max_value))
-
-    @staticmethod
-    def _clamp_item_quality(new_quality):
-        return GildedRose._clamp(new_quality, MINIMUM_QUALITY, MAX_QUALITY)
-
-    @staticmethod
-    def _update_generic(item):
-        degradation_rate = -1
-        if item.sell_in <= 0:
-            degradation_rate *= 2
-        if item.name.startswith(CONJURED):
-            degradation_rate *= 2
-        item.quality += degradation_rate
 
     @staticmethod
     def _update_item_quality(item):
@@ -59,6 +42,23 @@ class GildedRose(object):
 
         item.sell_in -= 1
         item.quality = GildedRose._clamp_item_quality(item.quality)
+
+    @staticmethod
+    def _update_generic(item):
+        degradation_rate = -1
+        if item.sell_in <= 0:
+            degradation_rate *= 2
+        if item.name.startswith(CONJURED):
+            degradation_rate *= 2
+        item.quality += degradation_rate
+
+    @staticmethod
+    def _clamp_item_quality(new_quality):
+        return _clamp(new_quality, MIN_QUALITY, MAX_QUALITY)
+
+
+def _clamp(value, min_value, max_value):
+    return max(min_value, min(value, max_value))
 
 
 class Item:

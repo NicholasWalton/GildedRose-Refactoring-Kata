@@ -5,16 +5,16 @@ from gilded_rose import Item, GildedRose
 
 
 @pytest.fixture
-def item(name, sell_in, quality):
+def updated_item(name, sell_in, quality):
     item = Item(name, sell_in, quality)
     gilded_rose = GildedRose([item])
     gilded_rose.update_quality()
     return item
 
 
-@pytest.mark.parametrize("name,sell_in,quality", (("foo", 0, 0),))
-def test_foo(item):
-    assert "foo" == item.name
+@pytest.mark.parametrize("name,sell_in,quality", (("item_name", 0, 0),))
+def test_name(updated_item):
+    assert updated_item.name == "item_name"
 
 
 @pytest.mark.parametrize(
@@ -53,9 +53,9 @@ def test_foo(item):
         ]
     ),
 )
-def test_item(item, sell_in, expected_quality):
-    assert sell_in - 1 == item.sell_in
-    assert expected_quality == item.quality
+def test_item(updated_item, sell_in, expected_quality):
+    assert updated_item.sell_in == sell_in - 1
+    assert updated_item.quality == expected_quality
 
 
 @pytest.mark.parametrize(
@@ -65,6 +65,6 @@ def test_item(item, sell_in, expected_quality):
         for vals in ((5, 10), (1, 10), (0, 10), (-5, 20), (5, 80))
     ],
 )
-def test_sulfuras_ages(item, sell_in, quality):
-    assert sell_in == item.sell_in
-    assert quality == item.quality
+def test_sulfuras(updated_item, sell_in, quality):
+    assert updated_item.sell_in == sell_in
+    assert updated_item.quality == quality
