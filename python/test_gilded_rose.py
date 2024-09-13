@@ -29,7 +29,7 @@ class GildedRoseSuite:
     "sell_in,quality,expected_quality",
     ((5, 10, 9), (1, 10, 9), (0, 10, 8), (-5, 20, 18), (10, 0, 0)),
 )
-class TestSausage(GildedRoseSuite):
+class TestGenericItem(GildedRoseSuite):
     pass
 
 
@@ -38,7 +38,7 @@ class TestSausage(GildedRoseSuite):
     "sell_in,quality,expected_quality",
     ((5, 10, 8), (1, 10, 8), (0, 10, 6), (-5, 20, 16), (10, 0, 0)),
 )
-class TestConjured(GildedRoseSuite):
+class TestGenericConjuredItem(GildedRoseSuite):
     pass
 
 
@@ -57,6 +57,15 @@ class TestAgedBrie(GildedRoseSuite):
     pass
 
 
+@pytest.mark.parametrize("name", ("Sulfuras, Hand of Ragnaros",))
+@pytest.mark.parametrize(
+    "sell_in,quality", ((5, 10), (1, 10), (0, 10), (-5, 20), (5, 80))
+)
+def test_sulfuras(updated_item, sell_in, quality):
+    assert updated_item.sell_in == sell_in
+    assert updated_item.quality == quality
+
+
 @pytest.mark.parametrize("name", ("Backstage passes to a TAFKAL80ETC concert",))
 @pytest.mark.parametrize(
     "sell_in,quality,expected_quality",
@@ -73,12 +82,3 @@ class TestAgedBrie(GildedRoseSuite):
 )
 class TestBackstagePasses(GildedRoseSuite):
     pass
-
-
-@pytest.mark.parametrize("name", ("Sulfuras, Hand of Ragnaros",))
-@pytest.mark.parametrize(
-    "sell_in,quality", ((5, 10), (1, 10), (0, 10), (-5, 20), (5, 80))
-)
-def test_sulfuras(updated_item, sell_in, quality):
-    assert updated_item.sell_in == sell_in
-    assert updated_item.quality == quality
