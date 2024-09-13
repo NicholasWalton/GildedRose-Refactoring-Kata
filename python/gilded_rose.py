@@ -16,41 +16,43 @@ class GildedRose(object):
 
     def update_quality(self):
         for item in self.items:
-            self._update_item_quality(item)
+            GildedRose._update_item_quality(item)
 
-    def _item_quality_modifier(self, quality, modifier):
-        intermediate = min(MAX_QUALITY, quality + modifier)
-        return max(MINIMUM_QUALITY, intermediate)
+    @staticmethod
+    def _item_quality_modifier(item, degradation_rate):
+        intermediate = min(MAX_QUALITY, item.quality + degradation_rate)
+        item.quality = max(MINIMUM_QUALITY, intermediate)
 
-    def _update_generic(self, item):
+    @staticmethod
+    def _update_generic(item):
         degradation_rate = -1
         if item.sell_in <= 0:
             degradation_rate *= 2
         if item.name.startswith(CONJURED):
             degradation_rate *= 2
+        GildedRose._item_quality_modifier(item, degradation_rate)
 
-        item.quality = self._item_quality_modifier(item.quality, degradation_rate)
-
-    def _update_item_quality(self, item):
+    @staticmethod
+    def _update_item_quality(item):
         match item.name:
             case ItemType.AGED_BRIE:
                 if item.sell_in > 0:
-                    item.quality = self._item_quality_modifier(item.quality, 1)
+                    GildedRose._item_quality_modifier(item, 1)
                 else:
-                    item.quality = self._item_quality_modifier(item.quality, 2)
+                    GildedRose._item_quality_modifier(item, 2)
             case ItemType.BACKSTAGE_PASSES:
                 if item.sell_in > 10:
-                    item.quality = self._item_quality_modifier(item.quality, 1)
+                    GildedRose._item_quality_modifier(item, 1)
                 elif item.sell_in > 5:
-                    item.quality = self._item_quality_modifier(item.quality, 2)
+                    GildedRose._item_quality_modifier(item, 2)
                 elif item.sell_in > 0:
-                    item.quality = self._item_quality_modifier(item.quality, 3)
+                    GildedRose._item_quality_modifier(item, 3)
                 else:
                     item.quality = 0
             case ItemType.SULFURAS:
                 item.sell_in += 1
             case _:
-                self._update_generic(item)
+                GildedRose._update_generic(item)
 
         item.sell_in -= 1
 
