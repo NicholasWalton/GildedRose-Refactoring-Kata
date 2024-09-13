@@ -4,7 +4,7 @@ CONJURED = "Conjured"
 MAX_QUALITY = 50
 
 
-class ItemType():
+class ItemType:
     BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert"
     AGED_BRIE = "Aged Brie"
     SULFURAS = "Sulfuras, Hand of Ragnaros"
