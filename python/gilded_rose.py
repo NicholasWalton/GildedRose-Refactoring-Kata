@@ -23,13 +23,13 @@ class GildedRose(object):
         return max(MINIMUM_QUALITY, intermediate)
 
     def _update_generic(self, item):
-        degredation_rate = -1
+        degradation_rate = -1
         if item.sell_in <= 0:
-            degredation_rate *= 2
+            degradation_rate *= 2
         if item.name.startswith(CONJURED):
-            degredation_rate *= 2
+            degradation_rate *= 2
 
-        item.quality = self._item_quality_modifier(item.quality, degredation_rate)
+        item.quality = self._item_quality_modifier(item.quality, degradation_rate)
 
     def _update_item_quality(self, item):
         match item.name:
