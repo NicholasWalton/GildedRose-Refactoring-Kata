@@ -19,9 +19,12 @@ class GildedRose(object):
             GildedRose._update_item_quality(item)
 
     @staticmethod
-    def _item_quality_modifier(item, degradation_rate):
-        intermediate = min(MAX_QUALITY, item.quality + degradation_rate)
-        item.quality = max(MINIMUM_QUALITY, intermediate)
+    def _clamp(value, min_value, max_value):
+        return max(min_value, min(value, max_value))
+
+    @staticmethod
+    def _clamp_item_quality(new_quality):
+        return GildedRose._clamp(new_quality, MINIMUM_QUALITY, MAX_QUALITY)
 
     @staticmethod
     def _update_generic(item):
@@ -30,31 +33,32 @@ class GildedRose(object):
             degradation_rate *= 2
         if item.name.startswith(CONJURED):
             degradation_rate *= 2
-        GildedRose._item_quality_modifier(item, degradation_rate)
+        item.quality += degradation_rate
 
     @staticmethod
     def _update_item_quality(item):
         match item.name:
             case ItemType.AGED_BRIE:
                 if item.sell_in > 0:
-                    GildedRose._item_quality_modifier(item, 1)
+                    item.quality += 1
                 else:
-                    GildedRose._item_quality_modifier(item, 2)
+                    item.quality += 2
             case ItemType.BACKSTAGE_PASSES:
                 if item.sell_in > 10:
-                    GildedRose._item_quality_modifier(item, 1)
+                    item.quality += 1
                 elif item.sell_in > 5:
-                    GildedRose._item_quality_modifier(item, 2)
+                    item.quality += 2
                 elif item.sell_in > 0:
-                    GildedRose._item_quality_modifier(item, 3)
+                    item.quality += 3
                 else:
                     item.quality = 0
             case ItemType.SULFURAS:
-                item.sell_in += 1
+                return
             case _:
                 GildedRose._update_generic(item)
 
         item.sell_in -= 1
+        item.quality = GildedRose._clamp_item_quality(item.quality)
 
 
 class Item:
